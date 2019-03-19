@@ -6,14 +6,16 @@ Retrieves negative keywords in a campaign.
 from __future__ import absolute_import
 
 import argparse
+import logging
 import sys
-import six
 
 import google.ads.google_ads.client
-
+import pandas as pd
+import six
 
 _DEFAULT_PAGE_SIZE = 1000
 
+LOG = logging.getLogger(__name__)
 
 def run_query(client, customer_id, page_size):
     """Run the query and print the result"""
@@ -34,22 +36,20 @@ def run_query(client, customer_id, page_size):
     response = ga_service.search(customer_id, query, page_size=page_size)
 
     try:
-        for row in response:
-            campaign = row.campaign
-            ad_group = row.ad_group
-            criterion = row.ad_group_criterion
-            metrics = row.metrics
+        attrs = _parse_select_attrs(query)
+        values = []
 
-            print('Keyword text "%s" with match type "%d" and ID %d in ad '
-                  'group "%s" with ID "%d" in campaign "%s" with ID %d had %s '
-                  'impression(s), %s click(s), and %s cost (in micros) during '
-                  'the last 7 days.'
-                  % (criterion.keyword.text.value, criterion.keyword.match_type,
-                     criterion.criterion_id.value,
-                     ad_group.name.value, ad_group.id.value,
-                     campaign.name.value, campaign.id.value,
-                     metrics.impressions.value,
-                     metrics.clicks.value, metrics.cost_micros.value))
+        for row in response:
+            row_values = []
+            for attr in attrs:
+                val = _get_attr_by_str(row, attr)
+                row_values.append(val)
+            values.append(row_values)
+
+        df = pd.DataFrame(values, columns=attrs)
+
+        print(df.head)
+
     except google.ads.google_ads.errors.GoogleAdsException as ex:
         print('Request with ID "%s" failed with status "%s" and includes the '
               'following errors:' % (ex.request_id, ex.error.code().name))
@@ -60,7 +60,41 @@ def run_query(client, customer_id, page_size):
                     print('\t\tOn field: %s' % field_path_element.field_name)
         sys.exit(1)
 
-def strip(customer_id):
+
+def _get_attr_by_str(obj, attr_str):
+    try:
+        attrs = _get_attr_name(attr_str).split('.')
+        return _get_attrs(obj, attrs)
+    except Exception as err:
+        LOG.error('Attr=%s; err=%s', attr_str, err)
+        raise err
+
+
+def _get_attr_name(attr):
+    last = attr.split('.')[-1]
+    if last == 'match_type':
+        return attr
+    return attr + '.value'
+
+
+def _get_attrs(obj, attrs):
+    first = attrs[0]
+    rest = attrs[1:]
+    new_obj = getattr(obj, first)
+    if rest:
+        return _get_attrs(new_obj, rest)
+    return new_obj
+
+
+def _parse_select_attrs(query):
+    """Get selected attributes from query"""
+    rightside = query.lower().split('select ')[1]
+    attrs_str = rightside.split('from ')[0]
+    attrs = attrs_str.split(',')
+    return list(map(lambda s: s.strip(), attrs))
+
+
+def _strip(customer_id):
     """
     Customer id should contain only digits.
     Example "123-456-7890" => "1234567890"
@@ -78,8 +112,7 @@ def main(page_size):
     # The following argument(s) should be provided to run the example.
     parser.add_argument('-c', '--customer_id', type=six.text_type, required=True, help='The Google Ads customer ID.')
     args = parser.parse_args()
-
-    run_query(google_ads_client, strip(args.customer_id), page_size)
+    run_query(google_ads_client, _strip(args.customer_id), page_size)
 
 if __name__ == '__main__':
     main(_DEFAULT_PAGE_SIZE)
