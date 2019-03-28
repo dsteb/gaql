@@ -1,6 +1,6 @@
 # GAQL
 
-GAQL - The Google Ads Query Language Command Line Tool
+GAQL - The Google Ads Query Language Query Executor
 
 ## Setup
 
@@ -31,6 +31,8 @@ Here you can find a [template](https://github.com/googleads/google-ads-python/bl
 ```bash
 FLASK_APP=gaql FLASK_ENV=development venv/bin/flask run
 ```
+
+Open http://localhost:5000/query
 
 ## Tests
 
