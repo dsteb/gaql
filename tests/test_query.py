@@ -2,7 +2,8 @@
 Test module for query parser
 """
 
-from src.main import _parse_select_attrs
+from context import gaql
+from gaql.query import _parse_select_attrs
 
 
 def test_extract_select_attrs():
@@ -21,7 +22,8 @@ def test_extract_select_attrs():
 
     expected = ['campaign.id', 'campaign.name',
                 'ad_group.id', 'ad_group.name',
-                'ad_group_criterion.criterion_id', 'ad_group_criterion.keyword.text',
+                'ad_group_criterion.criterion_id',
+                'ad_group_criterion.keyword.text',
                 'ad_group_criterion.keyword.match_type',
                 'metrics.impressions', 'metrics.clicks', 'metrics.cost_micros']
 

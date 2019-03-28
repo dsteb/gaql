@@ -1,0 +1,26 @@
+<!doctype html>
+<title>GAQL</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<nav>
+  <h1>Google Ads Query Language</h1>
+  <ul>
+    <li><a href="https://developers.google.com/google-ads/api/docs/query/interactive-gaql-builder">Google Ads Query Builder</a>
+  </ul>
+</nav>
+<section class="content">
+  <header>
+    <h1>Executor</h1>
+  </header>
+  {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+  <form method="post">
+    <label for="customer-id">Customer id</label>
+    <input name="customer-id" id="customer-id" required value="{{ customer_id }}">
+    <label for="query">Query</label>
+    <textarea name="query" id="query" required>{{ query }}</textarea>
+    <input type="submit" value="Execute">
+  </form>
+  <h2>Output</h2>
+  {{ table|safe }}
+</section>

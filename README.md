@@ -14,9 +14,9 @@ You should have installed **git**, **python**, **pip** and **virtualenv** to pro
 ```bash
 git clone https://github.com/dsteb/gaql
 cd gaql
-virtualenv venv --python=python3.6
-source venv/bin/activate
-pip install -r requirements.txt
+python3 -m venv venv
+. venv/bin/activate
+venv/bin/pip install -r requirements.txt
 ```
 
 ### Credentials
@@ -26,8 +26,22 @@ To authenticate your API calls, you must specify your **client ID**, **client se
 The default behavior is to load a configuration file named **google-ads.yaml** located in your home directory.
 Here you can find a [template](https://github.com/googleads/google-ads-python/blob/master/google-ads.yaml) you can use.
 
-### Run
+## Run
 
 ```bash
-python src/main.py --customer_id 123-456-7890
+FLASK_APP=gaql FLASK_ENV=development venv/bin/flask run
+```
+
+## Tests
+
+### Install dependencies
+
+```bash
+venv/bin/pip install -r dev-requirements.txt
+```
+
+### Test
+
+```bash
+venv/bin/pytest
 ```

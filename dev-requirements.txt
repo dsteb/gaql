@@ -1,0 +1,4 @@
+pytest
+pylint
+pep8
+git-lint
