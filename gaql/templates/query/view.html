@@ -21,6 +21,10 @@
     <textarea name="query" id="query" required>{{ query }}</textarea>
     <input type="submit" value="Execute">
   </form>
+</section>
+<section>
   <h2>Output</h2>
-  {{ table|safe }}
+  <div>
+    {{ table|safe }}
+  </div>
 </section>
