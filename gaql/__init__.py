@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, redirect
 
 
 def create_app(test_config=None):
@@ -13,11 +13,11 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    from . import query
-    app.register_blueprint(query.bp)
+    from . import views
+    app.register_blueprint(views.bp)
 
     @app.route('/')
-    def hello():
-        return 'Hello World!'
+    def root():
+        return redirect('/query')
 
     return app
