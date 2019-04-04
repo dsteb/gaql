@@ -1,0 +1,15 @@
+body {
+    padding: 2em;
+}
+
+#customer-id {
+    max-width: 200px;
+}
+
+#query {
+    max-width: 700px;
+}
+
+.output {
+    margin-top: 1em;
+}

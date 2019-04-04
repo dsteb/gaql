@@ -21,7 +21,12 @@ def query_view():
 
         df = services.run_query_to_df(customer_id, query)
 
-        return render_template('query/view.html', table=df.to_html(),
+        return render_template('query/view.html', table=_to_html(df),
                                customer_id=customer_id, query=query)
 
     return render_template('query/view.html')
+
+
+def _to_html(df):
+    return df.to_html(classes=['table', 'table-bordered', 'table-striped',
+                               'table-hover'], index=False)
