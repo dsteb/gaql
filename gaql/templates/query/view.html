@@ -21,7 +21,9 @@
     </nav>
     <section>
       {% for message in get_flashed_messages() %}
-      <div class="flash">{{ message }}</div>
+      <div class="alert alert-warning" role="alert">
+        {{ message }}
+      </div>
       {% endfor %}
       <form method="post">
         <div class="form-group">
