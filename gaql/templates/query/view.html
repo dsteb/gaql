@@ -25,7 +25,7 @@
         {{ message }}
       </div>
       {% endfor %}
-      <form method="post">
+      <form method="post" id="query-form">
         <div class="form-group">
           <label for="customer-id">Customer id</label>
           <input class="form-control" name="customer-id" id="customer-id" required value="{{ customer_id }}">
@@ -34,12 +34,39 @@
           <label for="query">Query</label>
           <textarea class="form-control" name="query" id="query" rows="12">{{ query }}</textarea>
         </div>
-        <input id="submit" class="btn btn-primary" type="submit" value="Execute">
+        <input id="page" name="page" class="btn btn-primary" type="hidden" value="1">
+        <input class="btn btn-primary" type="submit" value="Execute">
       </form>
     </section>
     {% if table is defined %}
     <section class="output">
       <h2>Output</h2>
+      {% if pagination.visible %}
+      <nav>
+        <ul class="pagination">
+          <li class="page-item{% if not pagination.has_previous %} disabled{% endif %}">
+            <a class="page-link" href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+          {% for page in pagination.pages %}
+          <li class="page-item{% if page == pagination.page %} active{% endif %}">
+            <a class="page-link" href="#">{{ page }}
+              {% if page == pagination.page %}
+              <span class="sr-only">Current</span>
+              {% endif %}
+            </a></li>
+          {% endfor %}
+          <li class="page-item{% if not pagination.has_next %} disabled{% endif %}">
+            <a class="page-link" href="#" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      {% endif %}
       {{ table|safe }}
     </section>{% endif %}
     <script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
