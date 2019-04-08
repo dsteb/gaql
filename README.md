@@ -1,6 +1,8 @@
 # GAQL
 
-GAQL - The Google Ads Query Language Query Executor
+GAQL - The Google Ads Query Language Executor
+
+Web UI to execute GAQL queries.
 
 ## Setup
 
