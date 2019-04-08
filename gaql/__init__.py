@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, redirect
+from flask import Flask, redirect, jsonify
 
 
 def create_app(test_config=None):
@@ -23,5 +23,11 @@ def create_app(test_config=None):
     @app.route('/')
     def root():
         return redirect('/query')
+
+    @app.route('/health')
+    def health():
+        resp = jsonify(success=True)
+        resp.status_code = 200
+        return resp
 
     return app
