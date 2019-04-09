@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, redirect, jsonify
+from flask import Flask, redirect, jsonify, url_for
 
 
 def create_app(test_config=None):
@@ -22,7 +22,7 @@ def create_app(test_config=None):
 
     @app.route('/')
     def root():
-        return redirect('/query')
+        return redirect(url_for('query.query_view'))
 
     @app.route('/health')
     def health():

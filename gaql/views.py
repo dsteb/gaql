@@ -7,7 +7,7 @@ from flask import Blueprint, render_template, request
 
 from . import services
 
-bp = Blueprint('auth', __name__, url_prefix='/query')
+bp = Blueprint('query', __name__, url_prefix='/query')
 
 
 DEFAULT_PAGE_SIZE = 50
