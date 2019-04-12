@@ -2,6 +2,8 @@ import os
 
 from flask import Flask, redirect, jsonify, url_for
 
+from .middleware.prefix import PrefixMiddleware
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -11,6 +13,9 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
     )
 
+    if 'env' in os.environ and os.environ['env'] == 'qa':
+        app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/gaql')
+
     # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
@@ -18,11 +23,8 @@ def create_app(test_config=None):
         pass
 
     from . import views
-    app.register_blueprint(views.bp)
 
-    @app.route('/')
-    def root():
-        return redirect(url_for('query.query_view'))
+    app.register_blueprint(views.bp)
 
     @app.route('/health')
     def health():
