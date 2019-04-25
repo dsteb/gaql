@@ -48,12 +48,12 @@ def _parse_select(query):
     returns ["adGroup.name", "campaign.name"]
     """
     lower_query = query.lower()
-    if 'select ' not in lower_query:
+    if 'select' not in lower_query:
         raise ParseSelectException('"SELECT" not found in query')
-    rightside = lower_query.split('select ')[1]
-    if 'from ' not in rightside:
+    rightside = lower_query.split('select')[1]
+    if 'from' not in rightside:
         raise ParseSelectException('"FROM" not found in query')
-    attrs_str = rightside.split('from ')[0]
+    attrs_str = rightside.split('from')[0]
     attrs = attrs_str.split(',')
     return map(lambda s: s.strip(), attrs)
 
