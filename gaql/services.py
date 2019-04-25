@@ -6,6 +6,8 @@ import logging
 import google
 import pandas as pd
 from flask import flash
+from werkzeug.contrib.cache import SimpleCache
+
 
 from . import google_ads_api
 from .errors import AttributeValueException
@@ -13,9 +15,21 @@ from .errors import ParseSelectException
 
 logger = logging.getLogger(__name__)
 
+cache = SimpleCache()
+
 
 def run_query_to_df(customer_id, query):
     """ Run GAQL query and return pandas Dataframe """
+    cached_df = cache.get(query)
+    if cached_df is None:
+        cached_df = _run_query(customer_id, query)
+        if cached_df.empty:
+            return cached_df
+    cache.set(query, cached_df, timeout=5*60)
+    return cached_df
+
+
+def _run_query(customer_id, query):
     client = google_ads_api.get_client()
     try:
         obj_list = google_ads_api.run_query(client, customer_id, query)
@@ -39,7 +53,7 @@ def run_query_to_df(customer_id, query):
         flash(str(ex))
         logger.warning('Query=%s; Err=%s', query, ex)
 
-    return pd.DataFrame()
+    return pd.Dataframe()
 
 
 def _parse_select(query):
