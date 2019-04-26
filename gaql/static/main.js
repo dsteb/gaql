@@ -52,8 +52,22 @@
     }
   }
 
+  function downloadCsv() {
+    const customerId = document.getElementById('customer-id').value;
+    const query = document.getElementById('query').value;
+    const queryBase64 = btoa(query);
+    window.open('csv?customer_id=' + customerId + '&query=' + queryBase64);
+    return false;
+  }
+
   window.onload = function() {
     initCodeMirror();
     initPagination();
+
+    var downloadBtn = document.getElementById('download-btn');
+    console.log(downloadBtn)
+    if (downloadBtn) {
+      downloadBtn.onclick = downloadCsv;
+    }
   };
 })();

@@ -1,9 +1,12 @@
 """
     HTTP handlers for Query
 """
+import csv
 import math
+import base64
+from io import StringIO
 
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, make_response
 
 from . import services
 
@@ -31,6 +34,21 @@ def query_view():
                                pagination=paginator)
 
     return render_template('query/view.html')
+
+
+@bp.route('/csv', methods=('GET',))
+def query_csv():
+    customer_id = request.args.get('customer_id')
+    query_base64 = request.args.get('query')
+    query = base64.b64decode(query_base64).decode('UTF-8')
+    df = services.run_query_to_df(customer_id, query)
+    buf = StringIO()
+    df.to_csv(buf)
+    output = make_response(buf.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=query.csv"
+    output.headers["Content-type"] = "text/csv"
+    base64.b64decode(query_base64)
+    return output
 
 
 def _to_html(df):

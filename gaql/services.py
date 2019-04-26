@@ -20,12 +20,12 @@ cache = SimpleCache()
 
 def run_query_to_df(customer_id, query):
     """ Run GAQL query and return pandas Dataframe """
-    cached_df = cache.get(query)
+    cached_df = cache.get((customer_id, query))
     if cached_df is None:
         cached_df = _run_query(customer_id, query)
         if cached_df.empty:
             return cached_df
-    cache.set(query, cached_df, timeout=5*60)
+    cache.set((customer_id, query), cached_df, timeout=5*60)
     return cached_df
 
 
@@ -41,7 +41,8 @@ def _run_query(customer_id, query):
             err_msg = error.message
             if error.location:
                 for field_path_element in error.location.field_path_elements:
-                    err_msg += f'\n\tOn field: {field_path_element.field_name}'
+                    err_msg += f'\n\tOn field: \
+                        {field_paqth_element.field_name}'
             flash(err_msg)
         logger.warning(ex)
     except google.api_core.exceptions.DeadlineExceeded as ex:
@@ -53,7 +54,7 @@ def _run_query(customer_id, query):
         flash(str(ex))
         logger.warning('Query=%s; Err=%s', query, ex)
 
-    return pd.Dataframe()
+    return pd.DataFrame()
 
 
 def _parse_select(query):

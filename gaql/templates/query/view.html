@@ -36,6 +36,8 @@
         </div>
         <input id="page" name="page" class="btn btn-primary" type="hidden" value="1">
         <input class="btn btn-primary" type="submit" value="Execute">
+        <button class="btn btn-link" id="download-btn">Download CSV</button>
+        {% if table is defined %}{% endif %}
       </form>
     </section>
     {% if table is defined %}
