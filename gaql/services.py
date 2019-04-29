@@ -131,6 +131,6 @@ def _get_value_base(obj, attr):
         returns the value of the attr
     """
     value = getattr(obj, attr)
-    if attr == 'match_type':
-        return value
-    return getattr(value, 'value')
+    if hasattr(value, 'value'):
+        return getattr(value, 'value')
+    return value
