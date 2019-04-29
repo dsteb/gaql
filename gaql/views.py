@@ -4,6 +4,7 @@
 import base64
 import csv
 import math
+import time
 from io import StringIO
 
 from flask import Blueprint, make_response, render_template, request
@@ -20,6 +21,8 @@ DEFAULT_PAGE_SIZE = 50
 def query_view():
     """GET/POST HTTP handler for query route"""
     if request.method == 'POST':
+        start = time.time()
+
         query = request.form['query']
         customer_id = request.form['customer-id']
         page = int(request.form['page'])
@@ -29,9 +32,12 @@ def query_view():
         df = _slice(df, page, DEFAULT_PAGE_SIZE)
         paginator = _get_pagination(df, page, DEFAULT_PAGE_SIZE, total_items)
 
+        execution_time = "{0:.2f}s".format(time.time() - start)
+
         return render_template('query/view.html', table=_to_html(df),
                                customer_id=customer_id, query=query,
-                               pagination=paginator)
+                               pagination=paginator,
+                               execution_time=execution_time)
 
     return render_template('query/view.html')
 
