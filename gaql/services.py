@@ -20,6 +20,7 @@ cache = SimpleCache()
 
 def run_query_to_df(customer_id, query):
     """ Run GAQL query and return pandas Dataframe """
+    customer_id = customer_id.replace('-', '')
     cached_df = cache.get((customer_id, query))
     if cached_df is None:
         cached_df = _run_query(customer_id, query)
