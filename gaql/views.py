@@ -1,12 +1,12 @@
 """
     HTTP handlers for Query
 """
+import base64
 import csv
 import math
-import base64
 from io import StringIO
 
-from flask import Blueprint, render_template, request, make_response
+from flask import Blueprint, make_response, render_template, request
 
 from . import services
 
@@ -86,5 +86,6 @@ def _get_pagination(df, page, page_size, total_items):
         'has_previous': page > 1,
         'has_next': page < total_pages,
         'page': page,
-        'pages': pages
+        'pages': pages,
+        'total_pages': total_pages,
     }

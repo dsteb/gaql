@@ -42,7 +42,7 @@
     </section>
     {% if table is defined %}
     <section class="output">
-      <h2>Output</h2>
+      <h2>Output{% if pagination.visible %} (page {{ pagination.page }} / {{ pagination.total_pages }}){% endif %}</h2>
       {% if pagination.visible %}
       <nav>
         <ul class="pagination">
